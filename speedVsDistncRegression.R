@@ -68,7 +68,7 @@ par(mfrow = c(1,2))
 
 #density plot for speed
 attach(cars)
-plot(density(dist),main = "density plot for speed"
+plot(density(dist),main = "density plot for distance"
      ,ylab = "frequency"
      ,sub = paste("Skewness: ",(e1071::skewness(dist))))
 
