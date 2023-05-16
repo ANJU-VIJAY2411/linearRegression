@@ -12,6 +12,7 @@ colnames(states)[colnames(states) == "HS Grad"] <- "HS_Grad"
 
 # Q3a
 # Examine initial linearity between variables in the dataset
+install.packages("psych")
 library(psych)
 pairs.panels(states,
              smooth = FALSE,      # If TRUE, draws loess smooths
@@ -118,3 +119,143 @@ paste("Population outliers: ", paste(outlier_values, collapse=", "))
 # Use boxplot.stats() function to generate relevant outliers
 outlier_values <- boxplot.stats(states$Income)$out # outlier values.
 paste("Income outliers: ", paste(outlier_values, collapse=", "))
+
+outlier_values <- boxplot.stats(states$Illiteracy)$out # outlier values.
+paste("Illiteracy outliers: ", paste(outlier_values, collapse=", "))
+
+outlier_values <- boxplot.stats(states$Life_Exp)$out # outlier values.
+paste("Life_Exp outliers: ", paste(outlier_values, collapse=", "))
+
+outlier_values <- boxplot.stats(states$Murder)$out # outlier values.
+paste("Murder outliers: ", paste(outlier_values, collapse=", "))
+
+
+states <- subset(states,states$Population != 21198 )
+states <- subset(states,states$Population != 11197 )
+states <- subset(states,states$Population != 18076 )
+states <- subset(states,states$Population != 11860 )
+states <- subset(states,states$Population != 12237 )
+states <- subset(states,states$Income != 6315 )
+
+
+# check for normality and skewness
+install.packages("e1071")
+library(e1071)
+par(mfrow = c(4,2))
+
+plot(density(states$Population),
+     main = "Density plot for population"
+     ,sub = paste("Skewness : ", round(e1071::skewness(states$Population),2)
+                  ,polygon(density(states$Population),col = "red")))
+
+
+#* skewness of < -1 or > 1 , highly skewed
+#* -1 to -0.5  or 1 to 0.5 , moderately skewed
+#* -0.5  0.5 then approx symmetrical
+
+
+shapiro.test(states$Population)
+
+#*not normally distributed
+#*option 1 : drop the variable and do not use the model
+#*option 2: use the variable and ignore MLR assumptions
+#*option 3: transform the variable to make it more normaly distributed
+#*
+
+install.packages("MASS")
+library(MASS)
+box_cox_transformation <- boxcox(states$Murder ~ states$Population)
+
+lamda <- box_cox_transformation$x[which.max(box_cox_transformation$y)]
+lamda
+
+
+normalised_population <- ((states$Population ^ lamda)/ lamda)
+hist(normalised_population)
+shapiro.test(normalised_population)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+library(e1071)
+par(mfrow = c(4,2))
+
+plot(density(states$Income),
+     main = "Density plot for income"
+     ,sub = paste("Skewness : ", round(e1071::skewness(states$Income),2)
+                  ,polygon(density(states$Income),col = "red")))
+
+
+#* skewness of < -1 or > 1 , highly skewed
+#* -1 to -0.5  or 1 to 0.5 , moderately skewed
+#* -0.5  0.5 then approx symmetrical
+
+
+shapiro.test(states$Income)
+
+#*not normally distributed
+#*option 1 : drop the variable and do not use the model
+#*option 2: use the variable and ignore MLR assumptions
+#*option 3: transform the variable to make it more normaly distributed
+#*
+
+install.packages("MASS")
+library(MASS)
+box_cox_transformation <- boxcox(states$Murder ~ states$Income)
+
+lamda <- box_cox_transformation$x[which.max(box_cox_transformation$y)]
+lamda
+
+
+normalised_population <- ((states$Population ^ lamda)/ lamda)
+hist(normalised_population)
+shapiro.test(normalised_population)
+
+
+  
+  
+  
+shapiro.test(states$Income)  #0.3246
+shapiro.test(states$Illiteracy)   #8.297e-05 , not normally distributed
+shapiro.test(states$`Life Exp`)  # 0.3608
+shapiro.test(states$Murder)  #0.06601
+shapiro.test(states$`HS Grad`)  #0.02194 , , not normally distributed
+shapiro.test(states$Frost) #0.0928 
+shapiro.test(states$Area)  #0.1876
+
+
+
+library(MASS)
+box_cox_transformation <- boxcox(states$Murder ~ states$Illiteracy)
+
+lamda <- box_cox_transformation$x[which.max(box_cox_transformation$y)]
+lamda
+
+
+normalised_Illiteracy <- ((states$Illiteracy ^ lamda)/ lamda)
+hist(normalised_Illiteracy)
+shapiro.test(normalised_Illiteracy)
+
+
+
+library(MASS)
+box_cox_transformation <- boxcox(states$Murder ~ states$`HS Grad`)
+
+lamda <- box_cox_transformation$x[which.max(box_cox_transformation$y)]
+lamda
+
+
+normalised_hsGrad <- ((states$`HS Grad` ^ lamda)/ lamda)
+hist(normalised_hsGrad)
+shapiro.test(normalised_hsGrad)
