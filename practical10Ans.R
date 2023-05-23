@@ -338,6 +338,186 @@ plot(MLR_subset_selection, scale="adjr2")
 stepAIC(unmodified_model, direction="backward")
 
 
+#*unmodified model consisting of population , income , illiteracy , 
+#*
+
+
+unmodified_model <- lm(Murder ~ Population + Income + Illiteracy + Life_Exp + HS_Grad + Frost, data=training_data)
+summary(unmodified_model)
+
+
+#* Confidence interval of the model
+
+confint(unmodified_model)
+
+
+#* Outlier if the entire model
+
+install.packages("car")
+library(car)
+qqPlot(unmodified_model,
+       labels = row.names(training_data$name),
+       id.method = "Identify" , simulate = TRUE,
+       main = "Q- Q plot for unmodified model")
+
+
+training_data["Nevada",]
+training_data["Maine",]
+
+#* use the filletd() function to fit value to the model
+
+fitted(unmodified_model)["Nevada"]
+fitted(unmodified_model)["Maine"]
+
+#View the errors on a histogram
+#Studentized residuals larger than 2 or < -2 then they require attention
+studentized_fit <- rstudent(unmodified_model)
+hist(studentized_fit, 
+     breaks = 10, 
+     freq = FALSE,
+     xlab = "Studentized residuals",
+     main = "Distribution of errors")
+#rug plot is used to show the distribution of data
+#rug plot looks like a tassles on a rug
+rug(jitter(studentized_fit), col = "red")
+curve(dnorm(x, 
+            mean = mean(studentized_fit),
+            sd = sd(studentized_fit)),
+      add = TRUE,
+      col = "blue", 
+      lwed = 2)
+
+
+# model fit 
+lines(density(studentized_fit)$x,
+      density(studentized_fit)$y,
+      lwd = 2,
+      col = "red",
+      lty = 2
+       )
+
+# Add legend
+
+legend("topright", legend = c("normal curve" , "kernal density curve"), lty = 2 , col = c("blue","red"))
+
+outlierTest(unmodified_model)
+
+
+#Maiane looks like an outlier
+
+
+training_data <- subset(training_data , training_data$name != "Maine")
+unmodified_model <- lm(Murder ~ Population + Income + Illiteracy + Life_Exp + HS_Grad + Frost, data=training_data)
+summary(unmodified_model)
+
+
+training_data <- subset(training_data , training_data$name != "Maine")
+unmodified_model <- lm(Murder ~ Population + Income + Illiteracy + Life_Exp + HS_Grad + Frost, data=training_data)
+summary(unmodified_model)
+
+
+qqPlot(unmodified_model,
+       labels = row.names(training_data$name),
+       id.method = "Identify" , simulate = TRUE,
+       main = "Q- Q plot for unmodified model")
+
+
+training_data["Nevada",]
+training_data["Maine",]
+
+#* use the filletd() function to fit value to the model
+
+fitted(unmodified_model)["Nevada"]
+fitted(unmodified_model)["Maine"]
+
+#View the errors on a histogram
+#Studentized residuals larger than 2 or < -2 then they require attention
+studentized_fit <- rstudent(unmodified_model)
+hist(studentized_fit, 
+     breaks = 10, 
+     freq = FALSE,
+     xlab = "Studentized residuals",
+     main = "Distribution of errors")
+#rug plot is used to show the distribution of data
+#rug plot looks like a tassles on a rug
+rug(jitter(studentized_fit), col = "red")
+curve(dnorm(x, 
+            mean = mean(studentized_fit),
+            sd = sd(studentized_fit)),
+      add = TRUE,
+      col = "blue", 
+      lwed = 2)
+
+
+# model fit 
+lines(density(studentized_fit)$x,
+      density(studentized_fit)$y,
+      lwd = 2,
+      col = "red",
+      lty = 2
+)
+
+# Add legend
+
+legend("topright", legend = c("normal curve" , "kernal density curve"), lty = 2 , col = c("blue","red"))
+
+outlierTest(unmodified_model)
 
 
 
+
+
+
+
+training_data <- subset(training_data , training_data$name != "Nevada")
+unmodified_model <- lm(Murder ~ Population + Income + Illiteracy + Life_Exp + HS_Grad + Frost, data=training_data)
+summary(unmodified_model)
+
+
+
+qqPlot(unmodified_model,
+       labels = row.names(training_data$name),
+       id.method = "Identify" , simulate = TRUE,
+       main = "Q- Q plot for unmodified model")
+
+
+training_data["Nevada",]
+training_data["Maine",]
+
+#* use the filletd() function to fit value to the model
+
+fitted(unmodified_model)["Nevada"]
+fitted(unmodified_model)["Maine"]
+
+#View the errors on a histogram
+#Studentized residuals larger than 2 or < -2 then they require attention
+studentized_fit <- rstudent(unmodified_model)
+hist(studentized_fit, 
+     breaks = 10, 
+     freq = FALSE,
+     xlab = "Studentized residuals",
+     main = "Distribution of errors")
+#rug plot is used to show the distribution of data
+#rug plot looks like a tassles on a rug
+rug(jitter(studentized_fit), col = "red")
+curve(dnorm(x, 
+            mean = mean(studentized_fit),
+            sd = sd(studentized_fit)),
+      add = TRUE,
+      col = "blue", 
+      lwed = 2)
+
+
+# model fit 
+lines(density(studentized_fit)$x,
+      density(studentized_fit)$y,
+      lwd = 2,
+      col = "red",
+      lty = 2
+)
+
+# Add legend
+
+legend("topright", legend = c("normal curve" , "kernal density curve"), lty = 2 , col = c("blue","red"))
+
+outlierTest(unmodified_model)
