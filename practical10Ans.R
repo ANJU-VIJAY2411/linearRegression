@@ -558,3 +558,30 @@ summary(gvmodel)
 predicted_murder <- predict(unmodified_model, testing_data)
 
 actual_prediction <- data.frame(cbind(actuals = testing_data$Murder, predicted = predicted_murder))
+
+head(actual_prediction)
+
+# accuracy percentage caluculation
+cor_accuracy <- cor(actual_prediction)
+cor_accuracy
+
+
+summary(states)
+
+# what is the murder rate
+# where population = 100 , income 4000 , illiteracy  = 5% , life expectancy = 70 and high school grade = 37
+
+
+
+question <- data.frame(Population = c(1000)
+                       ,Income = c(4000)
+                       ,Illiteracy = c(.5)
+                       ,Life_Exp = c(70)
+                       ,HS_Grad = c(37)
+                       ,Frost = c(0))
+
+predicted_murder <- predict(unmodified_model,question)
+predicted_murder
+
+
+#how could we check if 8.38% is an accurate replection of the real data
