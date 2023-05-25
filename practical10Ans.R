@@ -411,10 +411,6 @@ unmodified_model <- lm(Murder ~ Population + Income + Illiteracy + Life_Exp + HS
 summary(unmodified_model)
 
 
-training_data <- subset(training_data , training_data$name != "Maine")
-unmodified_model <- lm(Murder ~ Population + Income + Illiteracy + Life_Exp + HS_Grad + Frost, data=training_data)
-summary(unmodified_model)
-
 
 qqPlot(unmodified_model,
        labels = row.names(training_data$name),
@@ -521,3 +517,44 @@ lines(density(studentized_fit)$x,
 legend("topright", legend = c("normal curve" , "kernal density curve"), lty = 2 , col = c("blue","red"))
 
 outlierTest(unmodified_model)
+
+
+# Influential observations
+# Cook's D value > 4/(n-k-1)
+# where n = sample size , 
+# k = number of predicator values
+
+cutoff <- 4 / (nrow(training_data) - length(unmodified_model$coefficients) - 1)
+plot(unmodified_model, which = 4 , cook.levels = cutoff)
+abline(h = cutoff , lty = 2, col = "red")
+
+
+influencePlot(unmodified_model, 
+              main = "Influence plot for unmodified model",
+              sub = "Circle size is proportional to Cook's distance")
+
+#* homoscedacity =  the data needs to have a constant
+#* varience in the residuals
+#* if the p value <0.05 ten the rror varience
+#* changes with the level of fitted value
+
+ncvTest(unmodified_model)
+
+
+#*  transforming  a model
+
+spreadLevelPlot(unmodified_model)
+
+
+# global validation of the model
+
+install.packages("gvlma")
+library(gvlma)
+gvmodel <- gvlma(unmodified_model)
+summary(gvmodel)
+
+# prdition with the test data
+
+predicted_murder <- predict(unmodified_model, testing_data)
+
+actual_prediction <- data.frame(cbind(actuals = testing_data$Murder, predicted = predicted_murder))
